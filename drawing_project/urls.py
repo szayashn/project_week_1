@@ -4,5 +4,5 @@ from django.urls import path
 from django.contrib import admin
 
 urlpatterns = [
-    path('chat/', include('apps.drawing_app.urls')),
+    path('', include('apps.drawing_app.urls')),
 ]
