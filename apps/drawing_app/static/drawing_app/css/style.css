@@ -1,0 +1,62 @@
+.container{
+    background-image: linear-gradient(to bottom right, #2CC4D3, #2C70D3);
+    text-align: center;
+    color: rgba(255, 255, 255, 0.952);
+    width: 60%;
+    min-height: 600px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.join:hover{
+    background-color: green;
+}
+
+.join{
+    margin-top: 20px;
+    display: inline-block;
+    background-color: #2CD38F;
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    text-align: center;
+    font-size: 30px;
+    cursor: pointer;
+    margin-right: 25px;
+    width: 200px;
+    border-radius: 5px;
+}
+.create:hover{
+    background-color: rgba(255, 143, 15, 0.726);
+}
+
+.create{
+    display: inline-block;
+    background-color: rgb(255, 143, 15);
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    text-align: center;
+    font-size: 30px;
+    cursor: pointer;
+    width: 200px;
+    border-radius: 5px;
+}
+
+img{
+
+    width: 55%;
+    height: 55%;
+}
+
+.btn btn-outline-warning btn-lg{
+    width: 100px;
+}
+
+h2{
+    margin-bottom: 40px;
+}
+
+h3{
+    margin-top: 60px;
+}
