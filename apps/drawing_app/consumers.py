@@ -24,7 +24,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     # Receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        if text_data_json['isMessage']:
+        if 'message' in text_data_json:
             message = text_data_json['message']
             await self.channel_layer.group_send(
                 self.room_group_name,
@@ -34,7 +34,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 }
             )
 
-        else:
+        elif 'clickX' in  text_data_json:
             clickX = text_data_json['clickX']
             clickY = text_data_json['clickY']
             clickDrag = text_data_json['clickDrag']
@@ -46,6 +46,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'clickX': clickX,
                     'clickY': clickY,
                     'clickDrag': clickDrag
+                }
+            )
+        elif 'test' in text_data_json:
+            user_name = text_data_json['test']
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'users_online',
+                    'user_name': user_name
                 }
             )
 
@@ -67,4 +76,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'clickX': clickX,
             'clickY': clickY,
             'clickDrag': clickDrag
+        }))
+
+    async def users_online(self, event):
+        user = event['user_name']
+        await self.send(text_data=json.dumps({
+            'user_name': user
         }))

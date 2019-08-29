@@ -1,0 +1,41 @@
+/* .container{
+    background-image: linear-gradient(to bottom right, #2CC4D3, #2C70D3);
+} */
+
+.canvas{
+    border: 1px solid black
+}
+
+/*********************************************************************/
+.loader{
+    position: fixed;
+    z-index: 99;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+}
+
+.loader > img{
+    width: 10%;
+    height: 15%;
+}
+
+.loader.hidden{
+    animation: fadeout 1s;
+    animation-fill-mode: forwards;
+    animation-delay: 1s;
+}
+
+@keyframes fadeout{
+    100%{
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+/*********************************************************************/
+

@@ -2,16 +2,34 @@
 <html>
 <head>
     <meta charset="utf-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <title>Chat Room</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'drawing_app/css/room_style.css' %}">
 </head>
 <body>
-    <canvas id="canvas" width="800" height="600" style="border: 1px solid black"></canvas>
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br/>
-    <input id="chat-message-input" type="text" size="100"/><br/>
-    <input id="chat-message-submit" type="button" value="Send"/>
+    
+    <!-- ************************Loader************************ -->
+    <div class="loader">
+        <img src="https://www.animatedimages.org/data/media/210/animated-crocodile-image-0010.gif" alt="Loading...">Loading...
+    </div>
+    <!-- ************************Loader************************ -->
+    <div style="border: 1px solid black; display: inline-block;">
+        <canvas id="canvas" width="800" height="600"></canvas>
+    </div>
+    <div style="border: 1px solid black; height: 130px; vertical-align: top; display: inline-block; width: 35%; padding: 7px;"><span style="font-weight: bold; text-decoration: underline;">
+        <div id = "users_in_the_room" style="display: block; height: 200px; width: 100px;"><span>LOBBY</span></br></div>
+        <textarea id="chat-log" cols="100" rows="20" style="display: block; width: 35%; height: 200px; padding: 7px;"></textarea><br/>
+        <input id="chat-message-input" type="text" size="100" style="display: block; width: 35%"/><br/>
+        <input id="chat-message-submit" type="button" value="Send" style="display: block"/>
+    </div>
 </body>
 <script>
+    window.addEventListener("load", function(){
+        const loader = document.querySelector(".loader");
+        loader.className += " hidden";
+    });
  
 var mouseX,mouseY,mouseDown=0;
 var roomName = {{ room_name_json }};
@@ -24,6 +42,8 @@ var clickDrag = new Array();
 var paint;
 var isHost = false;
 var message = "";
+var user_name = {{user_name_json}};
+
     if (canvas.getContext)
         ctx = canvas.getContext('2d');
 
@@ -43,7 +63,13 @@ var message = "";
         'ws://' + window.location.host +
         '/ws/chat/' + roomName + '/');
 
-
+    chatSocket.onopen  = function(e) {
+        chatSocket.send(JSON.stringify({
+            'test': user_name
+        }));
+        $('#users_in_the_room').append(user_name + '\n');
+        
+    }
     chatSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);
             if (data['message']){
@@ -72,8 +98,7 @@ var message = "";
         var messageInputDom = document.querySelector('#chat-message-input');
         var message = messageInputDom.value;
         chatSocket.send(JSON.stringify({
-            'message': message,
-            'isMessage': true
+            'message': message
         }));
 
         messageInputDom.value = '';
@@ -86,8 +111,7 @@ function addClick(x, y, dragging){
         chatSocket.send(JSON.stringify({
             'clickX': x,
             'clickY': y,
-            'clickDrag': dragging,
-            'isMessage': false
+            'clickDrag': dragging
         }));
     }
 }
@@ -210,7 +234,7 @@ function getTouchPos(e) {
     }
 }
 
-
+  
 
 </script>
 </html>

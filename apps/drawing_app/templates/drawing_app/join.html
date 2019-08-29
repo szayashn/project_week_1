@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <meta charset="utf-8"/>
+    <title>Chat Rooms</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'drawing_app/css/join_style.css' %}">
+</head>
+<body>
+    <!-- <div class="loader">
+        <img src="https://www.animatedimages.org/data/media/210/animated-crocodile-image-0010.gif" alt="Loading...">Loading...
+    </div> -->
+    <div class="container">
+        <form action="/room" method="post" class="form">
+            {% csrf_token %} 
+            <h2>Enter Room ID</h2>
+            <input name="room-name-input" type="text" size="40" required/>
+            <h2>Choose a Display Name</h2>
+            <input name="user-name-input" type="text" size="40" required/><br/>
+            <input type="submit" value="Enter"/>
+        </form>
+    </div>
+    <script type="text/javascript">
+        window.addEventListener("load", function(){
+            const loader = document.querySelector(".loader");
+            loader.className += " hidden";
+        });
+    </script>
+</body>
+</html>

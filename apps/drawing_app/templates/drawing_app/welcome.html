@@ -8,17 +8,112 @@
         <link rel="stylesheet" href="{% static 'drawing_app/css/style.css' %}">
     </head>
     <body>
+        <div class="loader">
+            <img src="https://www.animatedimages.org/data/media/210/animated-crocodile-image-0010.gif" alt="Loading..."></br>
+            <p>Loading...</p>
+        </div>
         <div class="container">
             <h1>Welcome to Crocodile!</h1>
             <h2>Guess the picture to win</h2>
             <img src="{% static 'drawing_app/images/cartooncroc.png' %}">
             <h3>Join or Create a room to begin</h3>
-            <form action="" style="display: inline-block">
-                <button type="submit" class="join">Join</button>
-            </form>
-            <form action="" style="display: inline-block">
-                <button type="submit" class="create">Create</button>
-            </form>
+            <!-- <form style="display: inline-block">
+                {% csrf_token %} -->
+                <button id="joinbtn" class="join">Join</button>
+            <!-- </form> -->
+            <!-- <form action="/create" style="display: inline-block"> -->
+                <!-- {% csrf_token %} -->
+                <button id="createbtn" class="create">Create</button>
+            <!-- </form> -->
+
+<!-- ************************************************************************* -->
+            <!-- The Modal -->
+        <div id="joinModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2>Join</h2>
+                </div>
+                <div class="modal-body">
+                    <form action="/room" method="post" class="form">
+                    {% csrf_token %}
+                        <h2>Enter Room ID</h2>
+                        <input name="room-name-input" type="text" size="40" required/>
+                        <h2>Choose a Display Name</h2>
+                        <input name="user-name-input" type="text" size="40" required/><br/>
+                        <input type="submit" value="Enter"/>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <h3></h3>
+                </div>
+            </div>
         </div>
+<!-- ************************************************************************* -->
+        <div id="createModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2>Create</h2>
+                </div>
+                <div class="modal-body">
+                    <form action="/room" method="post" class="form">
+                    {% csrf_token %}
+                        <h2>Choose a Display Name</h2>
+                        <input name="user-name-input" type="text" size="40" required/><br/>
+                        <input type="submit" value="Submit"/>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <h3></h3>
+                </div>
+            </div>
+        </div>
+<!-- ************************************************************************* -->
+        </div>
+        <script type="text/javascript">
+            window.addEventListener("load", function(){
+                const loader = document.querySelector(".loader");
+                loader.className += " hidden";
+            });
+
+                        // Get the modal
+            var modal = document.getElementById("joinModal");
+            var modal2 = document.getElementById("createModal");
+            // Get the button that opens the modal
+            var btn = document.getElementById("joinbtn");
+            var btn2 = document.getElementById("createbtn");
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+            var span2 = document.getElementsByClassName("close")[1];
+
+            // When the user clicks the button, open the modal 
+            btn.onclick = function() {
+            modal.style.display = "block";
+            }
+
+            btn2.onclick = function() {
+            modal2.style.display = "block";
+            }
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
+            modal.style.display = "none";
+            }
+
+            span2.onclick = function() {
+            modal2.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+            }
+        </script>
     </body>
 </html>
