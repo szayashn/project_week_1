@@ -18,8 +18,8 @@
     <div style="border: 1px solid black; display: inline-block;">
         <canvas id="canvas" width="800" height="600"></canvas>
     </div>
-    <div style="border: 1px solid black; height: 130px; vertical-align: top; display: inline-block; width: 35%; padding: 7px;"><span style="font-weight: bold; text-decoration: underline;">
-        <div id = "users_in_the_room" style="display: block; height: 200px; width: 100px;"><span>LOBBY</span></br></div>
+    <div style="border: 1px solid black; vertical-align: top; display: inline-block; width: 35%; padding: 7px;">
+        <textarea id = "users_in_the_room" style="display: block; height: 200px; width: 100px;"></textarea>
         <textarea id="chat-log" cols="100" rows="20" style="display: block; width: 35%; height: 200px; padding: 7px;"></textarea><br/>
         <input id="chat-message-input" type="text" size="100" style="display: block; width: 35%"/><br/>
         <input id="chat-message-submit" type="button" value="Send" style="display: block"/>
@@ -59,9 +59,9 @@ if (ctx) {
     canvas.addEventListener('touchmove', sketchpad_touchMove, false);
     canvas.addEventListener('touchend', sketchpad_touchEnd, false);
 }
-var chatSocket = new WebSocket(
-    'ws://' + window.location.host +
-    '/ws/chat/' + roomName + '/');
+    var chatSocket = new WebSocket(
+        'ws://' + window.location.host +
+        '/ws/chat/' + roomName + '/');
     
     
     chatSocket.onmessage = function(e) {
@@ -115,6 +115,7 @@ var chatSocket = new WebSocket(
 
         messageInputDom.value = '';
     };
+
 function addClick(x, y, dragging){
     if (isHost){
         clickX.push(x);
