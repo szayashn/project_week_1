@@ -10,7 +10,8 @@
     <textarea id="chat-log" cols="100" rows="20"></textarea><br/>
     <input id="chat-message-input" type="text" size="100"/><br/>
     <input id="chat-message-submit" type="button" value="Send"/>
-    <div id = "users_in_the_room" style="border: 1px solid black; height: 40px;"></div>
+    <br>
+    <textarea id = "users_in_the_room" style="height: 200px; width: 300px;"></textarea><br>
 </body>
 <script>
  
@@ -23,36 +24,30 @@ var clickX = new Array();
 var clickY = new Array();
 var clickDrag = new Array();
 var paint;
-var isHost = false;
 var message = "";
 var user_name = {{user_name_json}};
+var isHost = false;
 
-    if (canvas.getContext)
-        ctx = canvas.getContext('2d');
+if (canvas.getContext)
+ctx = canvas.getContext('2d');
 
-    // Check that we have a valid context to draw on/with before adding event handlers
-    if (ctx) {
-        // React to mouse events on the canvas, and mouseup on the entire document
-        canvas.addEventListener('mousedown', sketchpad_mouseDown, false);
-        canvas.addEventListener('mousemove', sketchpad_mouseMove, false);
-        window.addEventListener('mouseup', sketchpad_mouseUp, false);
-
-        // React to touch events on the canvas
-        canvas.addEventListener('touchstart', sketchpad_touchStart, false);
-        canvas.addEventListener('touchmove', sketchpad_touchMove, false);
-        canvas.addEventListener('touchend', sketchpad_touchEnd, false);
-    }
-    var chatSocket = new WebSocket(
-        'ws://' + window.location.host +
-        '/ws/chat/' + roomName + '/');
-
-    chatSocket.onopen  = function(e) {
-        chatSocket.send(JSON.stringify({
-            'test': user_name
-        }));
-        $('#users_in_the_room').append(user_name + '\n');
-        
-    }
+// Check that we have a valid context to draw on/with before adding event handlers
+if (ctx) {
+    // React to mouse events on the canvas, and mouseup on the entire document
+    canvas.addEventListener('mousedown', sketchpad_mouseDown, false);
+    canvas.addEventListener('mousemove', sketchpad_mouseMove, false);
+    window.addEventListener('mouseup', sketchpad_mouseUp, false);
+    
+    // React to touch events on the canvas
+    canvas.addEventListener('touchstart', sketchpad_touchStart, false);
+    canvas.addEventListener('touchmove', sketchpad_touchMove, false);
+    canvas.addEventListener('touchend', sketchpad_touchEnd, false);
+}
+var chatSocket = new WebSocket(
+    'ws://' + window.location.host +
+    '/ws/chat/' + roomName + '/');
+    
+    
     chatSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);
             if (data['message']){
@@ -66,6 +61,24 @@ var user_name = {{user_name_json}};
                 clickY.push(data['clickY'])
                 clickDrag.push(data['clickDrag'])
                 redraw()
+            }
+            if (data['user_names']){
+                var all_names = data['user_names'];                
+                var cur_user = data['current_user'];                
+                if (all_names.length > 0){
+                    $('#users_in_the_room').val('');
+                    for (var u in all_names){
+                        document.querySelector('#users_in_the_room').value += (all_names[u].name + '\n');
+                    }
+                    isHost = cur_user.isHost
+                    
+                }
+            }
+            if (data['winner']){               
+                var cur_user = data['winner'];    
+                      
+                isHost = cur_user.isHost;
+                clearCanvas(canvas,ctx);
             }
         
         
@@ -81,16 +94,16 @@ var user_name = {{user_name_json}};
         var messageInputDom = document.querySelector('#chat-message-input');
         var message = messageInputDom.value;
         chatSocket.send(JSON.stringify({
-            'message': message
+            'message': user_name + ": " + message
         }));
 
         messageInputDom.value = '';
     };
 function addClick(x, y, dragging){
-    clickX.push(x);
-    clickY.push(y);
-    clickDrag.push(dragging);
     if (isHost){
+        clickX.push(x);
+        clickY.push(y);
+        clickDrag.push(dragging);        
         chatSocket.send(JSON.stringify({
             'clickX': x,
             'clickY': y,
@@ -98,8 +111,9 @@ function addClick(x, y, dragging){
         }));
     }
 }
+
 function redraw(){
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   
     ctx.strokeStyle = "#df4b26";
     ctx.lineJoin = "round";
@@ -120,6 +134,9 @@ function redraw(){
 // Clear the canvas context using the canvas width and height
 function clearCanvas(canvas,ctx) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    clickX = new Array();
+    clickY = new Array();
+    clickDrag = new Array();
 }
 
 // Keep track of the mouse button being pressed and draw a dot at current location
