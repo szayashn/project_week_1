@@ -19,10 +19,14 @@
         <!-- ************************Loader************************ -->
         <div style="background-color: white; border: 1.5px solid black; display: inline-block; margin: 40px;">
             <canvas id="canvas" width="700" height="514" style="background-color: white"></canvas>
-            <a class="advanced" data-id="color-2"  id = "color_wheel" href="#" style="background-color:#000;"></a>
+            <div id = "tools" style="display: none;">
+                <a class="advanced" data-id="color-2"  id = "color_wheel" href="#" style="background-color:#000;"></a>
+                <input type="button" value="Clear" id="btn_clear">
+            </div>
+            
         </div>
         <div style="background-color: white; border: 1.5px solid black; vertical-align: top; display: inline-block; width: 30%; height: 620px; margin: 10px; padding: 7px;">
-            LOBBY | Room ID: PLACEHOLDER | <a href="/">Leave</a>
+            LOBBY | Room ID: <span id="room_id"></span> | <a href="/">Leave</a>
             <textarea id = "users_in_the_room" disabled style="background-color: white; resize: none; display: block; height: 200px; width: 100%; padding: 5px;"></textarea>
             <textarea id="chat-log" disabled cols="100" rows="20" style="resize: none; background-color: white; display: block; width: 100%; height: 300px; padding: 5px;"></textarea><br/>
             <input id="chat-message-input" type="text" size="100" placeholder="Chat here" style="display: block; width: 80%; margin-top: -15px; background-color: white"/>
@@ -83,7 +87,14 @@ if (ctx) {
                 clickY.push(data['clickY']);
                 clickDrag.push(data['clickDrag']);
                 colorArr.push(data['clickColor']);                
-                redraw()
+                redraw();
+            }
+            if (!isHost && data['just_log_in']){
+                clickX = data['clickX'];
+                clickY = data['clickY'];
+                clickDrag = data['clickDrag'];
+                colorArr = data['clickColor'];                
+                redraw();
             }
             if (data['user_names']){
                 var all_names = data['user_names'];                
@@ -98,12 +109,21 @@ if (ctx) {
                 }
             }
             if (data['winner']){               
-                var cur_user = data['winner'];    
-                      
+                var cur_user = data['winner'];         
                 isHost = cur_user.isHost;
+                showTools();
                 clearCanvas(canvas,ctx);
             }
-        
+            if (!isHost){
+                hideTools();
+            }
+            else{
+                showTools();
+            }
+            if (data['clear']){
+                clearCanvas(canvas,ctx);
+            }
+
         
     };
     //document.querySelector('#chat-message-input').focus();
@@ -166,6 +186,9 @@ function clearCanvas(canvas,ctx) {
     clickY = new Array();
     clickDrag = new Array();
     colorArr = new Array();
+    chatSocket.send(JSON.stringify({
+            'clear': true
+        }));
 }
 
 // Keep track of the mouse button being pressed and draw a dot at current location
@@ -262,13 +285,18 @@ function getTouchPos(e) {
         }
     }
 }
-$(function(){
-    $('#btn_clear').click(function() {
-        clearCanvas(canvas,ctx); 
-    });
+
+$('#btn_clear').click(function() {
+    clearCanvas(canvas,ctx); 
 });
-  
 
+$('#room_id').text(roomName);
+function showTools() {
+ $("#tools").show();     
+}
 
+function hideTools() {
+  $("#tools").hide();  
+}
 </script>
 </html>
