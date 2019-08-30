@@ -17,20 +17,21 @@
             <img src="https://media3.giphy.com/media/5h3IepWPgqHBh7WG6r/source.gif" alt="Loading...">Loading...
         </div>
         <!-- ************************Loader************************ -->
-        <div style="background-color: white; border: 1.5px solid black; display: inline-block; margin: 40px;">
-            <canvas id="canvas" width="700" height="514" style="background-color: white"></canvas>
-            <div id = "tools" style="display: none;">
-                <a class="advanced" data-id="color-2"  id = "color_wheel" href="#" style="background-color:#000;"></a>
-                <input type="button" value="Clear" id="btn_clear">
+        <div class="main_body" >
+            <div id = "main_body" style="background-color: white; height: 90%; width: 60%; border: 1.5px solid black; display: inline-block; margin: 10px 10px 10px 40px; ">
+                <div id = "tools" class="tools" style="display: none;">
+                    <input type="button" value="Clear" id="btn_clear">
+                    <a class="advanced" data-id="color-2"  id = "color_wheel" href="#" style="background-color:#000;"></a>
+                </div>
+                <canvas id="canvas"style="background-color: white"></canvas>
             </div>
-            
-        </div>
-        <div style="background-color: white; border: 1.5px solid black; vertical-align: top; display: inline-block; width: 30%; height: 620px; margin: 10px; padding: 7px;">
-            LOBBY | Room ID: <span id="room_id"></span> | <a href="/">Leave</a>
-            <div id = "users_in_the_room" style="background-color: white; display: block; overflow: auto; height: 200px; width: 100%; padding: 5px;"></div>
-            <textarea id="chat-log" disabled cols="100" rows="20" style="resize: none; background-color: white; display: block; width: 100%; height: 300px; padding: 5px;"></textarea><br/>
-            <input id="chat-message-input" type="text"  placeholder="Chat here" style="display: block; width: 80%; margin-top: -15px; background-color: white"/>
-            <input id="chat-message-submit" type="button" value="Send"/>
+            <div style="background-color: white; border: 1.5px solid black; height: 90%; vertical-align: top; display: inline-block; width: 30%; margin: 10px; padding: 7px;">
+                LOBBY | Room ID: <span id="room_id"></span> | <a href="/">Leave</a>
+                <div id = "users_in_the_room" style="background-color: white; height: 20%; display: block; overflow: auto; width: 100%; padding: 5px;"></div>
+                <textarea id="chat-log" disabled  rows="20" style="resize: none; background-color: white; display: block; width: 100%; height: 60%; padding: 5px;"></textarea><br/>
+                <input id="chat-message-input" type="text"  placeholder="Chat here" style="display: block; width: 80%; margin-top: -15px; background-color: white"/>
+                <input id="chat-message-submit" type="button" value="Send"/>
+            </div>
         </div>
     </body>
 <script>
@@ -69,6 +70,8 @@ if (ctx) {
     canvas.addEventListener('touchmove', sketchpad_touchMove, false);
     canvas.addEventListener('touchend', sketchpad_touchEnd, false);
 }
+    ctx.canvas.width  = $('#main_body').width() - 10;
+    ctx.canvas.height =  $('#main_body').height() - 40;
     var chatSocket = new WebSocket(
         'ws://' + window.location.host +
         '/ws/chat/' + roomName + '/');
@@ -105,7 +108,7 @@ if (ctx) {
                     $('#users_in_the_room').text('');
                     for (var u in all_names){
                         if (all_names[u].isHost) {
-                            $('#users_in_the_room').append("<span style = 'color: red; font-size: 22px;'>" + all_names[u].name + "</span>" + "<br>");
+                            $('#users_in_the_room').append("<span style = 'color: red; font-size: 22px;'>" + all_names[u].name + '  - host' + "</span>" + "<br>");
                         }
                         else {
                             $('#users_in_the_room').append("<span style = 'color: green; font-size: 22px;'>" + all_names[u].name + "</span>" + "<br>");
@@ -121,7 +124,7 @@ if (ctx) {
                 isHost = cur_user.isHost;
                 for (var u in all_names){
                         if (all_names[u].isHost) {
-                            $('#users_in_the_room').append("<span style = 'color: red; font-size: 22px;'>" + all_names[u].name + "</span>" + "<br>");
+                            $('#users_in_the_room').append("<span style = 'color: red; font-size: 22px;'>" + all_names[u].name + '- host' + "</span>" + "<br>");
                         }
                         else {
                             $('#users_in_the_room').append("<span style = 'color: green; font-size: 22px;'>" + all_names[u].name + "</span>" + "<br>");

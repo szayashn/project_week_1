@@ -5,7 +5,12 @@
 .canvas{
     border: 1px solid black
 }
-
+html {
+    height: 100%;
+  }
+  body {
+    height: 100%;
+  }
 body{
     background-image: linear-gradient(to bottom right, #2CC4D3, #2C70D3);
     min-height: 100%;
@@ -18,6 +23,9 @@ html{
 }
 
 /*********************************************************************/
+.tools{
+    display: block;
+}
 .loader{
     position: fixed;
     z-index: 99;
@@ -48,19 +56,14 @@ html{
         visibility: hidden;
     }
 }
+
+.main_body{
+    height: 100%;
+
+}
 /*********************************************************************/
 
-/* .side{
-    background-image: linear-gradient(to bottom right, #2CD38F, rgb(1, 165, 1));
-    /* background-image: linear-gradient(to bottom right, #2CC4D3, #2C70D3); */
-    border: 1px solid black;
-    vertical-align: top;
-    display: inline-block;
-    width: 30%;
-    height: 620px;
-    margin: 10px;
-    /* padding: 7px; */
-}
+
 
 /* .canvas_holder{
     background-image: linear-gradient(to bottom right, #2CD38F, rgb(1, 165, 1));
