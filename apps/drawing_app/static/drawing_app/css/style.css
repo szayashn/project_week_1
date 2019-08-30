@@ -8,6 +8,10 @@
     margin-top: 20px;
 }
 
+body{
+    background-image: linear-gradient(to bottom right, #2CC4D3, #2C70D3);
+}
+
 /********************************************/
 
 /* The Modal (background) */
