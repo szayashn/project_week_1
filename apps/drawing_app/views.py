@@ -15,7 +15,7 @@ def join(request):
 
 def room(request):
     if request.method == 'POST':
-        room_name = request.POST['room-name-input']
+        room_name = request.POST['room-name-input'].lower()
         user_name = request.POST['user-name-input']
         random_id = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(64)]) 
             

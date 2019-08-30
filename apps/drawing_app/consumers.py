@@ -126,10 +126,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 }
             )
         elif 'clear' in  text_data_json:
+            del users_draw[self.room_name]
+            users_draw.setdefault(self.room_name, [])
+            users_draw[self.room_name].append([])
+            users_draw[self.room_name].append([])
+            users_draw[self.room_name].append([])
+            users_draw[self.room_name].append([])
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
-                    'type': 'clear',
+                    'type': 'clear'
                 }
             )
 
@@ -174,8 +180,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = event['message']
         await self.send(text_data=json.dumps({
             'message': message,
-            'winner': self.current_user.__dict__
+            'winner': self.current_user.__dict__,
+            'all_other_users': all_users[self.room_name]
         }))
+
     async def clear(self, event):
         await self.send(text_data=json.dumps({
             'clear': True
