@@ -7,6 +7,8 @@
     <title>Chat Room</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'drawing_app/css/room_style.css' %}">
+    <link rel="stylesheet" href="{% static 'drawing_app/css/colors.css' %}">
+    <script src="{% static 'drawing_app/js/color.js' %}"></script>  
 </head>
 <body>
     
@@ -15,8 +17,11 @@
         <img src="https://www.animatedimages.org/data/media/210/animated-crocodile-image-0010.gif" alt="Loading...">Loading...
     </div>
     <!-- ************************Loader************************ -->
-    <div style="border: 1px solid black; display: inline-block;">
-        <canvas id="canvas" width="800" height="600"></canvas>
+    <div style="display: inline-block;">
+        <canvas id="canvas" width="800" height="600" style="display: block; border: 1px solid black; "></canvas><br>
+        <input type="button" value="Clear" id = "btn_clear">
+        <a class="advanced" data-id="color-2"  id = "color_wheel" href="#" style="background-color:#000;"></a>
+    
     </div>
     <div style="border: 1px solid black; vertical-align: top; display: inline-block; width: 35%; padding: 7px;">
            <!-- ************************TEST************************ -->
@@ -40,10 +45,12 @@ var ctx;
 var clickX = new Array();
 var clickY = new Array();
 var clickDrag = new Array();
+var colorArr = new Array();
 var paint;
 var message = "";
 var user_name = {{user_name_json}};
 var isHost = false;
+var current_color = "#000";
 
 if (canvas.getContext)
 ctx = canvas.getContext('2d');
@@ -74,9 +81,10 @@ if (ctx) {
                 }
             }
             if (!isHost){
-                clickX.push(data['clickX'])
-                clickY.push(data['clickY'])
-                clickDrag.push(data['clickDrag'])
+                clickX.push(data['clickX']);
+                clickY.push(data['clickY']);
+                clickDrag.push(data['clickDrag']);
+                colorArr.push(data['clickColor']);                
                 redraw()
             }
             if (data['user_names']){
@@ -110,10 +118,11 @@ if (ctx) {
     document.querySelector('#chat-message-submit').onclick = function(e) {
         var messageInputDom = document.querySelector('#chat-message-input');
         var message = messageInputDom.value;
-        chatSocket.send(JSON.stringify({
-            'message': user_name + ": " + message
-        }));
-
+        if (message.length > 0) {
+            chatSocket.send(JSON.stringify({
+                'message': user_name + ": " + message
+            }));
+        }
         messageInputDom.value = '';
     };
 
@@ -121,23 +130,25 @@ function addClick(x, y, dragging){
     if (isHost){
         clickX.push(x);
         clickY.push(y);
-        clickDrag.push(dragging);        
+        clickDrag.push(dragging);
+        current_color = $('#color_wheel').css('background-color');  
+        colorArr.push(current_color);
         chatSocket.send(JSON.stringify({
             'clickX': x,
             'clickY': y,
-            'clickDrag': dragging
+            'clickDrag': dragging,
+            'clickColor': current_color
         }));
     }
 }
 
 function redraw(){
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  
-    ctx.strokeStyle = "#df4b26";
     ctx.lineJoin = "round";
     ctx.lineWidth = 5;
-                
-    for(var i=0; i < clickX.length; i++) {		
+    ctx.strokeStyle = current_color;          
+    for(var i=0; i < clickX.length; i++) {
+       		
         ctx.beginPath();
         if(clickDrag[i] && i){
             ctx.moveTo(clickX[i-1], clickY[i-1]);
@@ -146,6 +157,7 @@ function redraw(){
         }
         ctx.lineTo(clickX[i], clickY[i]);
         ctx.closePath();
+        ctx.strokeStyle = colorArr[i];
         ctx.stroke();
     }
 }
@@ -155,6 +167,7 @@ function clearCanvas(canvas,ctx) {
     clickX = new Array();
     clickY = new Array();
     clickDrag = new Array();
+    colorArr = new Array();
 }
 
 // Keep track of the mouse button being pressed and draw a dot at current location
@@ -251,8 +264,13 @@ function getTouchPos(e) {
         }
     }
 }
-
+$(function(){
+    $('#btn_clear').click(function() {
+        clearCanvas(canvas,ctx); 
+    });
+});
   
+
 
 </script>
 </html>

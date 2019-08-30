@@ -93,14 +93,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
             clickX = text_data_json['clickX']
             clickY = text_data_json['clickY']
             clickDrag = text_data_json['clickDrag']
-
+            clickColor = text_data_json['clickColor']
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
                     'type': 'draw_on_canvas',
                     'clickX': clickX,
                     'clickY': clickY,
-                    'clickDrag': clickDrag
+                    'clickDrag': clickDrag,
+                    'clickColor': clickColor
                 }
             )
 
@@ -116,12 +117,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         clickX = event['clickX']
         clickY = event['clickY']
         clickDrag = event['clickDrag']
-
+        clickColor = event['clickColor']
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
             'clickX': clickX,
             'clickY': clickY,
-            'clickDrag': clickDrag
+            'clickDrag': clickDrag,
+            'clickColor':clickColor
         }))
 
     async def users_online(self, event):
